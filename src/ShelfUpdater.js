@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 
-class BookshelfChanger extends Component {
-  state = {
+class ShelfUpdater extends Component {
+  state = 
+  {
     value: this.props.shelf
   };
-  handleChange = event => {
+  handleChange = event => 
+  {
     const { value } = event.target;
     this.setState({ value });
     this.props.onMove(this.props.book, value);
   };
-  render() {
+  render() 
+  {
     return (
       <div className="book-shelf-changer">
         <select value={this.state.value} onChange={this.handleChange}>
@@ -26,4 +29,4 @@ class BookshelfChanger extends Component {
   }
 }
 
-export default BookshelfChanger;
+export default ShelfUpdater;

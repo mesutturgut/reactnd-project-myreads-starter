@@ -1,12 +1,14 @@
-import React, { Component } from 'react';
-import SearchResults from './SearchResults';
 import { Link } from 'react-router-dom';
-import SearchBooksInput from './SearchBooksInput';
+import SearchBooksEnrty from "./SearchBooksEnrty";
+import React, { Component } from 'react';
+import SearchResponse from './SearchResponse';
 
-class SearchBooks extends Component {
+
+class Searched extends Component
+ {
   render() {
     const {
-      searchBooks,
+      searching,
       myBooks,
       onSearch,
       onResetSearch,
@@ -20,10 +22,11 @@ class SearchBooks extends Component {
               Close
             </button>
           </Link>
-          <SearchBooksInput onSearch={onSearch} />
+          <SearchBooksEnrty onSearch={onSearch} >            
+          </SearchBooksEnrty>
         </div>
-        <SearchResults
-          searchBooks={searchBooks}
+        <SearchResponse
+          searching={searching}
           myBooks={myBooks}
           onMove={onMove}
         />
@@ -32,4 +35,4 @@ class SearchBooks extends Component {
   }
 }
 
-export default SearchBooks;
+export default Searched;

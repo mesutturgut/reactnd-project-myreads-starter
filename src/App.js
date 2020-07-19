@@ -3,8 +3,8 @@ import { Route } from 'react-router-dom';
 import { debounce } from 'throttle-debounce';
 import * as BooksAPI from './BooksAPI';
 import './App.css';
-import ListBooks from './ListBooks';
-import SearchBooks from './SearchBooks';
+import Listed from './Listed';
+import Searched from './Searched';
 
 const bookshelves = [
   { key: 'currentlyReading', name: 'Currently Reading' },
@@ -14,7 +14,7 @@ const bookshelves = [
 class BooksApp extends Component {
   state = {
     myBooks: [],
-    searchBooks: [],
+    searching: [],
     error: false
   };
   componentDidMount = () => {
@@ -27,6 +27,24 @@ class BooksApp extends Component {
         this.setState({ error: true });
       });
   };
+  
+  searchForBooks = debounce(300, false, query => {
+    if (query.length > 0) {
+      BooksAPI.search(query).then(books => {
+        if (books.error) {
+          this.setState({ searching: [] });
+        } else {
+          this.setState({ searching: books });
+        }
+      });
+    } else {
+      this.setState({ searching: [] });
+    }
+  });
+  resetSearch = () => {
+    this.setState({ searching: [] });
+  };
+
   moveBook = (book, shelf) => {
     BooksAPI.update(book, shelf).catch(err => {
       console.log(err);
@@ -43,25 +61,9 @@ class BooksApp extends Component {
       }));
     }
   };
-  searchForBooks = debounce(300, false, query => {
-    if (query.length > 0) {
-      BooksAPI.search(query).then(books => {
-        if (books.error) {
-          this.setState({ searchBooks: [] });
-        } else {
-          this.setState({ searchBooks: books });
-        }
-      });
-    } else {
-      this.setState({ searchBooks: [] });
-    }
-  });
-  resetSearch = () => {
-    this.setState({ searchBooks: [] });
-  };
 
   render() {
-    const { myBooks, searchBooks, error } = this.state;
+    const { myBooks, searching, error } = this.state;
     if (error) {
       return <div>Network error. Please try again later.</div>;
     }
@@ -71,7 +73,7 @@ class BooksApp extends Component {
           exact
           path="/"
           render={() => (
-            <ListBooks
+            <Listed
               bookshelves={bookshelves}
               books={myBooks}
               onMove={this.moveBook}
@@ -81,8 +83,8 @@ class BooksApp extends Component {
         <Route
           path="/search"
           render={() => (
-            <SearchBooks
-              searchBooks={searchBooks}
+            <Searched
+            searching={searching}
               myBooks={myBooks}
               onSearch={this.searchForBooks}
               onMove={this.moveBook}
